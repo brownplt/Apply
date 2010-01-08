@@ -651,7 +651,7 @@ for information on contacting the server administrator.
 		user = UnverifiedUser.cSelectOne(self.department, id=int(highlightee))
 		if not user or user.role != 'reviewer':
 			raise ResumeFatalException('No pending user with that ID.')
-		for h in Highlight.cSelectBy(self.department,applicantID=self.id,highlighteeID=rev.id):
+		for h in PendingHighlight.cSelectBy(self.department,applicantID=self.id,highlighteeID=user.id):
 			h.destroySelf()
 		self.department.updateLastChange(self)
 		return self.handle_get()

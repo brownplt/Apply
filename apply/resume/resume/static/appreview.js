@@ -504,9 +504,19 @@ function loader() {
 		     hladd.events.serverResponse.transform_e(function(sr) {appReloadsE.sendEvent(sr);});
 		     return (hladd.dom instanceof Behaviour ? hladd.dom : constant_b(hladd.dom));
 		   },applicantB,unverifiedB)),'pending-add');
+
 	insertDomB(applicantB.transform_b(function(app) {
 	  if(app.pending_highlights.length > 0) {
-	    var applist = fold(function(v, acc) {return (acc == '' ? v.highlighteeName : acc+', '+v.highlighteeName);},'',app.pending_highlights);
+	    var applist = DIV(map(function(ph) {
+	      var rLink = A({href:'javascript:undefined',className:'remself'},"[remove]");
+	      getFilteredWSO_e(extractEvent_e(rLink,'click').constant_e(genRequest(
+	      {url:'Applicant/'+app.id+'/remove_pending_highlight',
+	      	     fields:{cookie:authCookie,
+			     highlightee:ph.highlighteeID}}))).transform_e(function(unhl) {
+	      	       appReloadsE.sendEvent(unhl);
+	      	     });
+	      return DIV(ph.highlighteeName,rLink);			 
+	    }, app.pending_highlights));
 	    return P('This applicant is pending referral to: ',applist);
 	  }
 	  else return SPAN();
