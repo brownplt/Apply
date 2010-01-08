@@ -163,6 +163,12 @@ function loader() {
     {url:'getReviewers',
      fields:{cookie:authCookie,id:$URL('id')}}))).startsWith([]);
 
+  var unverifiedB = 
+  getFilteredWSO_e(curAuthE.
+		   filter_e(function(evt) { return evt.role === 'admin'; }).
+		   constant_e(genRequest(
+		   {url:'UnverifiedUser/getPending',
+			  fields:{cookie:authCookie}}))).startsWith([]);
 
   var myInitRevB = getFilteredWSO_e(onLoadTimeE.constant_e(genRequest(
     {url:'Applicant/'+$URL('id')+'/Review/get',
@@ -478,6 +484,35 @@ function loader() {
 		       hladd.events.serverResponse.transform_e(function(sr) {appReloadsE.sendEvent(sr);});
 		       return (hladd.dom instanceof Behaviour ? hladd.dom : constant_b(hladd.dom));
 		     },applicantB,revsB)),'highlight-add');
+
+      if(curAuth.role === 'admin') {
+
+	insertDomB(
+		   switch_b(lift_b(function(app,revs) {
+		     var hls = toObj(app.pending_highlights,function(a) {return a.highlighteeName;});
+		     var optionlist = map(function(revr) {return OPTION({value:revr.id,disabled:hls[revr.email]?true:false},revr.email);},
+					  revs.sort(function(x,y) { return stringCmp(x.email,y.email); }));
+		     optionlist.push(OPTION({value:'None',disabled:true},'None'));
+		     var hladd = new SelectWidget('None',
+						  optionlist).withButton(
+									 new ButtonWidget('OK'),
+									 function(sel,btn) {return P('Set up a pending referral for a reviewer who is unconfirmed: ',sel,btn);}
+									 ).serverSaving(function(selectee) {
+									   return genRequest({url:'Applicant/'+app.id+'/pending_highlight',
+												    fields:{cookie:authCookie,highlightee:selectee}});
+									 });
+		     hladd.events.serverResponse.transform_e(function(sr) {appReloadsE.sendEvent(sr);});
+		     return (hladd.dom instanceof Behaviour ? hladd.dom : constant_b(hladd.dom));
+		   },applicantB,unverifiedB)),'pending-add');
+	insertDomB(applicantB.transform_b(function(app) {
+	  if(app.pending_highlights.length > 0) {
+	    var applist = fold(function(v, acc) {return (acc == '' ? v.highlighteeName : acc+', '+v.highlighteeName);},'',app.pending_highlights);
+	    return P('This applicant is pending referral to: ',applist);
+	  }
+	  else return SPAN();
+	}),'pending-list');
+
+      }
 
 
       insertDomB(

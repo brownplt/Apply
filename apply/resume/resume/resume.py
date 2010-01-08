@@ -1253,9 +1253,9 @@ To login after your account has been created, you can go to:
 		else:
 			uvu = UnverifiedUser.cSelectOne(dept,email=ai.email)
 			rev = Reviewer(department=dept,auth=ai)
-			pendings = PendingHighlight.cSelectBy(department=dept, highlightee = uvu)
+			pendings = PendingHighlight.cSelectBy(dept, highlightee = uvu)
 			for ph in pendings:
-				Highlight(department=dept,applicantID=ph.id,highlighteeID=rev.id)
+				Highlight(department=dept,applicant=ph.applicant,highlighteeID=rev.id)
 				ph.destroySelf()
 		for uvu in UnverifiedUser.cSelectBy(dept,email=ai.email):
 			uvu.destroySelf()
