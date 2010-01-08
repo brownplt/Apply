@@ -1039,7 +1039,27 @@ for information on contacting the server administrator.
 			os.remove(os.path.join(config.uploadPath,'%d-combined-pdf' % self.id))
 		except OSError, e:
 			pass
+	def makeCombinedSimple(self):
+		if os.access(os.path.join(config.uploadPath,'%d-combined-pdf' % self.id),os.F_OK):
+			return os.path.join(config.uploadPath,'%d-combined-pdf' % self.id)
+		cts = ComponentType.cSelectBy(self.department,type='statement')
+		lcomps = []
+		ltrs = [os.path.join(config.uploadPath,'ref-%d-pdf' % r.code) for r in self.references if r.submitted]
+		for ct in cts:
+			comp = Component.cSelectOne(self.department,applicant=self,type=ct)
+			if comp:
+				lcomps.append(os.path.join(config.uploadPath,'%d-%d-pdf' % (self.id,ct.id)))
+		lcomps.reverse()
+		tdir = tempfile.mkdtemp()
 
+		commandstr = ('pdftk %s cat output %s' % 
+			     ((' '.join(lcomps+ltrs)), os.path.join(config.uploadPath,'%d-combined-pdf' % self.id)))
+
+		os.system(commandstr)
+		if not os.access(os.path.join(config.uploadPath,'%d-combined-pdf' % self.id),os.F_OK):
+			raise ResumeFatalException('The combined PDF could not be created because of PDF errors.  Command was ' +  commandstr)
+		return os.path.join(config.uploadPath,'%d-combined-pdf' % self.id)
+	
 	def makeCombined(self):
 		if os.access(os.path.join(config.uploadPath,'%d-combined-pdf' % self.id),os.F_OK):
 			return os.path.join(config.uploadPath,'%d-combined-pdf' % self.id)
@@ -1080,14 +1100,14 @@ for information on contacting the server administrator.
 			'\n\\medskip\n'.join([getRevTex(rev) for rev in self.reviews])))
 		tfile.close()
 		os.system('pdflatex -output-directory %s %s' % (tdir,os.path.join(tdir,'o.tex')))
-		os.system('pdftk %s %s cat output %s dont_ask' % 
+		os.system('pdftk %s %s cat output %s' % 
 				(os.path.join(tdir,'o.pdf'),' '.join(lcomps+ltrs),os.path.join(config.uploadPath,'%d-combined-pdf' % self.id)))
 		os.system('rm -r %s' % tdir)
 		if not os.access(os.path.join(config.uploadPath,'%d-combined-pdf' % self.id),os.F_OK):
 			raise ResumeFatalException('The combined PDF for this applicant could not be created because of PDF errors.')
 		return os.path.join(config.uploadPath,'%d-combined-pdf' % self.id)
 	def handle_getCombined(self):
-		return HttpFileResult(self.makeCombined(),'application/pdf')
+		return HttpFileResult(self.makeCombinedSimple(),'application/pdf')
 	def handle_submitContactInfo(self,**kwargs):
 		for key, val in kwargs.iteritems():
 			if key.find('comp-') == 0:

@@ -265,10 +265,10 @@ function getTblColumns(bi,reviewer) {
 	return makeColumn('statement-col',c.short,function(a,b) {return 0;},function(a,cookie) {
 	    return TD(a.statements[c.id] ? A({href:'Applicant/'+a.id+'/getStatement.pdf?cookie='+cookie+'&comp='+c.id},c.short) : '');});
       },bi.statements)).concat([
-/*				makeColumn('combined-col','All',function(a,b) {return 0;},function(a,cookie) {
-				    return TD(A({href:'Applicant/'+a.id+'/getCSV.csv?cookie='+cookie},
-						(a.info.statements.length ? IMG({alt:'Get Combined PDF',title:'Get Combined PDF',border:0,src:'images/buddha.png'}) : '')));}),
-				batchCol,*/
+				makeColumn('combined-col','All',function(a,b) {return 0;},function(a,cookie) {
+				    return TD(A({href:'Applicant/'+a.id+'/getCombined.pdf?cookie='+cookie},
+						(a.info.statements.length ? IMG({alt:'Get Combined PDF',title:'Get Combined PDF',border:0,src:'images/pdficon_small.gif'}) : '')));}),
+				/*				batchCol,*/
 				makeColumn('summary', "My Scores", 
 					   // comparision function
 					   function(app1,app2) {
