@@ -1,3 +1,6 @@
 *~*
 *.pyc
 *.conf
+apply/resume/temp
+apply/resume/uploads
+apply/resume/logs
