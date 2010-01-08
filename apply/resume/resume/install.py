@@ -26,6 +26,11 @@ if len(sys.argv) > 1:
 		print "Adding newly defined tables to the database."
 		resume.updateDB()
 		sys.exit(0)
+	elif sys.argv[1] == 'updateCitizenships':
+		if not sys.argv[2]:
+			print "Please specify a file for input."
+		importer.updateCitizenships(sys.argv[2])
+		sys.exit(0)
 	elif sys.argv[1] == 'importTranscripts':
 		if not sys.argv[2]:
 			print "Please specify the directory the transcripts are held in."

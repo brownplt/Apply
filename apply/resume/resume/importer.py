@@ -157,6 +157,43 @@ def populateFromCSV(filename):
         if(isData(toefl)):
             testScoreFromNameAndScore(app,'TOEFL',str(toefl))
 
+def updateCitizenships(filename):
+    department_id=1
+    dept = resume.DepartmentInfo.selectBy(id=department_id)[0]
+    
+    f = open(filename,'r')
+    lines = []
+    try:
+        for line in f:
+            lines.append(line)
+    except:
+        f.close()
+        
+    for l in lines:
+        els = l.split(';')
+        i=0
+        
+        if('SCM' in els[1]): # skip masters students
+            continue
+
+        for el in els:
+            els[i] = el.strip('"')
+            i = i + 1
+        last = els[2]
+        first = els[3]
+        citizenship = els[4]
+
+	uname = (last + first).replace(' ','_')
+
+	if(not isData(citizenship)):
+		citizenship='United States'
+
+	applicant = resume.Applicant.cSelectOne(dept,firstname=first,lastname=last)
+	if(applicant):
+		print applicant.uname + ': ' + applicant.country + '->' + citizenship
+		applicant.country = citizenship
+
+
 def transcriptFilename(applicant):
 #	return applicant.uname + '.pdf'
 	return applicant.uname.replace('_',' ') + '.pdf'
@@ -238,7 +275,7 @@ def filename_to_ref_simple(dept, applicant, filename):
 	print "  " + filename
 	
 	user = resume.AuthInfo.cSelectOne(dept,username=applicant.uname)
-	applicant = resume.Applicant.cSelectOne(dept,auth=user)
+#	applicant = resume.Applicant.cSelectOne(dept,auth=user)
 
 	refname = "  " + os.path.splitext(os.path.split(filename)[1])[0].replace('_',' ')
 
