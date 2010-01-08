@@ -1552,7 +1552,7 @@ h2 {
 		else:
 			al = list(Applicant.cSelectBy(self))
 			al.sort(key=lambda s : s.namesort())
-			return '{"changed":true,"lastChange":%d,"value":[%s]}' % (self.lastChange,','.join(a.getJSON(auser) for a in al if (not a.rejected)))
+			return '{"changed":true,"lastChange":%d,"value":[%s]}' % (self.lastChange,','.join(a.getJSON(auser) for a in al))
 	
 	def handle_getReviewers(self):
 		return toJSON(list(Reviewer.cSelectBy(self)))
