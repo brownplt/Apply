@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C/DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>Job Application</title>
+    <link rel="stylesheet" type="text/css" media="all" href="style.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="style" />
+    <script type="text/javascript" src="flapjax/flapjax.js"></script>
+    <script type="text/javascript" src="flapjax/json.js"></script>
+    <script type="text/javascript" src="flapjax/plug.js"></script>
+    <script type="text/javascript" src="flapjax/myfjws.js"></script>
+    <script type="text/javascript" src="common.js"></script>
+    <script type="text/javascript" src="gcommon.js"></script>
+    <script type="text/javascript" src="cookies.js"></script>
+    <script type="text/javascript" src="verify.js"></script>
+  </head>
+  <body onload="loader();">
+    <h1 id="ptitle">Brown Computer Science Department</h1>
+    <div id="main">
+      <h2>create account<div class="sub">enter account information</div></h2>
+      <p id="errortext"></p>
+      <div id="vsi" style="display: none;">
+	<h3>Voluntary Self-Identification</h3>
+	<p>In order to assist us in processing your application, you
+	  may if you wish indicate your gender and ethnicity below.
+	  Providing this information is voluntary; whether you provide
+	  this information or not, you will not be subject to adverse
+	  treatment.
+	</p>
+	<table class="input-table" align="center">
+	  <tr><th>gender</th><th>ethnicity</th></tr>
+	  <tr><td><select id="gender">
+		<option value="Unknown" selected>I Choose Not to Indicate my Gender</option>
+		<option value="Male">Male</option>
+		<option value="Female">Female</option>
+	      </select>
+	    </td>
+	    <td>
+	      <select id="ethnicity">
+		<option value="zu" selected>I Choose Not to Indicate my Ethnicity</option>
+		<option value="am">American Indian or Alaskan Native</option>
+		<option value="as">Asian or Pacific Islander</option>
+		<option value="b">Black, non-Hispanic</option>
+		<option value="h">Hispanic</option>
+		<option value="w">White, non-Hispanic</option>
+		<option value="zo">Other</option>
+	      </select>
+	    </td>
+	  </tr>
+	</table>
+      </div> <!-- vsi -->
+
+      <div id="positionBlock" style="display: none">
+	<h3>Position</h3>
+	<table class="input-table" align="center">
+	  <tr><td>
+	      <select id="position">
+		<option value="nothing">Select a position</option>
+		<!-- filled in dynamically --> 
+	      </select>
+	  </td></tr>
+	</table>
+      </div>
+
+      <h3>Username and Password</h3>
+      <p>Please create a new username and password, which you will then use to login to Apply.</p>
+      <table class="input-table" align="center">
+	<tr><th>username</th><th>password</th><th>re-type password</th></tr>
+	<tr><td><input type="text" id="uname"></input></td>
+	  <td><input type="password" id="password"></input></td>
+	  <td><input type="password" id="repassword"></input></td>
+	</tr>
+      </table>
+      <p style="text-align: center; margin: 0; padding: 1em;"><input value="Create Account" id="vfy" type="button"/></p>
+    </div>
+    <div class="bottom">Resume is written in <a href="http://www.flapjax-lang.org">Flapjax</a>. Questions? Comments? <a href="contact.html">Contact Us.</a></div>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C/DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>Job Application</title>
+<link rel="stylesheet" type="text/css" media="all" href="style.css" />
+<!--[if IE]>
+<link rel="stylesheet" type="text/css" media="all" href="styleie.css" />
+<![endif]-->
+<link rel="stylesheet" type="text/css" media="all" href="style" />
+<script type="text/javascript" src="prototype.js"></script>
+<script type="text/javascript" src="flapjax/flapjax.js"></script>
+<script type="text/javascript" src="flapjax/json.js"></script>
+<script type="text/javascript" src="flapjax/plug.js"></script>
+<script type="text/javascript" src="flapjax/myfjws.js"></script>
+<script type="text/javascript" src="common.js"></script>
+<script type="text/javascript" src="gcommon.js"></script>
+<script type="text/javascript" src="cookies.js"></script>
+<script type="text/javascript" src="login.js"></script>
+<script type="text/javascript">
+window.setTimeout(loader,0); // window.onload problems on
+Safari 3.1.2
+</script>
+</head>
+<body onload="loader()">
+
+<h1 id="ptitle"></h1>
+<div class="content">
+
+<div style="align:center;width:50%;padding-left:200px;padding-right:200px">
+  <h2 style="text-align:left;padding-left:200x">login</h2>
+  <span id="logerror"></span>
+  <form action="Auth/getCookie" target="litarget" method="post">
+  <table class="input-table">
+    <tr><th>username</th><th>password</th></tr>
+    <tr><td><input type="text" name="username" /></td><td><input type="password" name="password" /></td></tr>
+    <tr><td colspan=2 class="buttons"><input id="login-button" type="submit" value="Login" /></td></tr>
+  </table>
+  </form>
+  <p><a id="reset-toggle" href="javascript:undefined">(forgot username or password?)</a></p>
+<div id="reset-info">
+  <p id="reset-blurb">If you forgot your username or password, enter your email below. You will
+  receive your username and a link that will allow you to enter a new password.</p>
+  <table class="input-table">
+    <tr><th>email</th></tr>
+    <tr><td><input type="text" id="reset-email" /></td></tr>
+    <tr><td class="buttons"><input id="reset-button" type="button" value="OK" /></td></tr>
+  </table>
+</div>
+
+</div>
+<div class="bottom">Apply is written in <a href="http://www.flapjax-lang.org">Flapjax</a>. Questions? Comments? <a href="contact.html">Contact Us.</a></div>
+<iframe style="display: none;" id="litarget" name="litarget" src="/blank.html"></iframe>
+</body>
+</html>
