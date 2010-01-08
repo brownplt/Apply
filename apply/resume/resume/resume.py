@@ -355,7 +355,7 @@ class Reviewer(SQLObject,SqlJson):
 	uname = property(fget = lambda self : self.auth.username)
 	role = property(fget = lambda self : self.auth.role)
 	numrevs = property(fget = lambda self : len([x for x in Review.cSelectBy(self.department,draft=False,reviewerID=self.id) if x.advocate != 'comment']))
-	committee = BoolCol(default=True)
+	committee = BoolCol(default=False)
 	department = ForeignKey('DepartmentInfo')
 	hiddens = RelatedJoin('Applicant',addRemoveName='Hidden',intermediateTable='rev_app_hide')
 
