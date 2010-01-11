@@ -105,6 +105,7 @@ function createInstitutionDOM(institutions, curAuth, ai) {
 }
 
 function reviewsVisible(auth, reviewers, reviews) {
+
   var this_reviewer = filter(function(revr) {
     return revr.uname == auth.username;}, 
 			     reviewers);
@@ -172,10 +173,8 @@ function loader() {
      fields:{cookie:authCookie,id:$URL('id')}}))).startsWith([]);
 
   var unverifiedB = 
-  getFilteredWSO_e(curAuthE.
-		   filter_e(function(evt) { return evt.role === 'admin'; }).
-		   constant_e(genRequest(
-		   {url:'UnverifiedUser/getPending',
+  getFilteredWSO_e(onLoadTimeE.constant_e(genRequest(
+		   {url:'getPending',
 			  fields:{cookie:authCookie}}))).startsWith([]);
 
   var myInitRevB = getFilteredWSO_e(onLoadTimeE.constant_e(genRequest(
@@ -479,8 +478,9 @@ function loader() {
       insertDomB(
 		 switch_b(lift_b(function(app,revs) {
 		       var hls = toObj(app.highlights,function(a) {return a.highlighteeName;});
-		       var optionlist = map(function(revr) {return OPTION({value:revr.id,disabled:hls[revr.uname]?true:false},revr.uname);},
-					    revs.sort(function(x,y) { return stringCmp(x.uname,y.uname); }));
+		       var listname = function(rev) {return rev.name + ' (' + rev.uname + ')';}
+		       var optionlist = map(function(revr) {return OPTION({value:revr.id,disabled:hls[listname(revr)]?true:false},listname(revr));},
+					    revs.sort(function(x,y) { return stringCmp(listname(x),listname(y)); }));
 		       optionlist.push(OPTION({value:'None',disabled:true},'None'));
 		       var hladd = new SelectWidget('None',
 						    optionlist).withButton(
@@ -494,13 +494,14 @@ function loader() {
 		       return (hladd.dom instanceof Behaviour ? hladd.dom : constant_b(hladd.dom));
 		     },applicantB,revsB)),'highlight-add');
 
-      if(curAuth.role === 'admin') {
+      //      if(curAuth.role === 'admin') {
 
 	insertDomB(
 		   switch_b(lift_b(function(app,revs) {
 		     var hls = toObj(app.pending_highlights,function(a) {return a.highlighteeName;});
-		     var optionlist = map(function(revr) {return OPTION({value:revr.id,disabled:hls[revr.email]?true:false},revr.email);},
-					  revs.sort(function(x,y) { return stringCmp(x.email,y.email); }));
+		     var listname = function(rev) {return rev.name + ' (' + rev.email + ')';};
+		     var optionlist = map(function(revr) {return OPTION({value:revr.id,disabled:hls[listname(revr)]?true:false},listname(revr));},
+					  revs.sort(function(x,y) { return stringCmp(listname(x),listname(y)); }));
 		     optionlist.push(OPTION({value:'None',disabled:true},'None'));
 		     var hladd = new SelectWidget('None',
 						  optionlist).withButton(
@@ -531,7 +532,7 @@ function loader() {
 	  else return SPAN();
 	}),'pending-list');
 
-      }
+	//}
 
 
       insertDomB(

@@ -247,7 +247,7 @@ class Highlight(SQLObject,SqlJson):
 	applicant = ForeignKey('Applicant')
 	highlightee = ForeignKey('Reviewer')
 	department = ForeignKey('DepartmentInfo')
-	highlighteeName = property(fget = lambda self : self.highlightee.uname)
+	highlighteeName = property(fget = lambda self : self.highlightee.name + ' (' + self.highlightee.uname + ')')
 
 	outputFields=['id','applicantID','highlighteeID','highlighteeName']
 
@@ -257,7 +257,7 @@ class PendingHighlight(SQLObject,SqlJson):
 	applicant = ForeignKey('Applicant')
 	highlightee = ForeignKey('UnverifiedUser')
 	department = ForeignKey('DepartmentInfo')
-	highlighteeName = property(fget = lambda self : self.highlightee.email)
+	highlighteeName = property(fget = lambda self : self.highlightee.name + ' (' + self.highlightee.email + ')')
 
 	outputFields=['id','applicantID','highlighteeID','highlighteeName']
 
@@ -1483,6 +1483,9 @@ h2 {
 		dist_countries = list(set(countries))
 		return dist_countries
 
+	def handle_getPending(self):
+		return toJSON([x for x in UnverifiedUser.select() if x.role != 'applicant'])
+
 	def handle_getBasic(self):
 		return toJSON(
 			{'areas':list(Area.cSelectBy(self)),
@@ -1811,6 +1814,7 @@ h2 {
 	
 	instanceHandlers = {
 			'getBasic':handle_getBasic,
+			'getPending':handle_getPending,
 			'getApplicants':handle_getApplicants,
 			'getReviewers':handle_getReviewers,
 			'style':handle_getStyle,
