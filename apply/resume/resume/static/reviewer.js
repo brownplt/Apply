@@ -240,14 +240,7 @@ function getTblColumns(bi,reviewer) {
 				 function(a,cookie) {
 				   return TD(A({href:'appreview.html?id='+a.id,
 						       target:'app'+a.id},a.info.lastname + ', ' + a.info.firstname),
-					     reviewer.auth.role == 'admin' ? DIV(A({href:'login.html?switch='+authCookie+'&user_id='+a.id},'(Log in as)')) : SPAN(),
-					     P(
-					       A({href:'http://images.google.com/images?q='+encodeURI('"'+a.info.name+'"'),
-							 target:'search'+a.id},
-						 IMG({className:'icon',src:'images/imagesearch.png',alt:'Image Search'})),
-					       map(function(wc) {
-						   return SPAN('[',A({href:showWebsite(wc.value)},wc.name),']',' ');
-						 },a.info.web)));
+					     reviewer.auth.role == 'admin' ? DIV(A({href:'login.html?switch='+authCookie+'&user_id='+a.id},'(Log in as)')) : SPAN());
 				 }),
 /*		      makeColumn('info-col','Position',
 				 function(a,b) { return stringCmp(a.info.position,b.info.position); },
@@ -795,7 +788,7 @@ function mapValues(fn,filter,obj) {
 function makeFilterClause(basicInfo,reviewer,baseFilter) {
   var filterSelect = 
     SELECT(OPTION({ value: 'test_score' }, "Test Score"),
-	   OPTION({ value: 'score' }, "Custom Score"),
+	   OPTION({ value: 'score' }, "Committee Score"),
            OPTION({ value: 'gender' }, "Gender"),
 	   //           OPTION({ value: 'ethnicity' }, "Ethnicity"),
 	   OPTION({ value: 'citizenship' }, "Citizenship"));
