@@ -239,7 +239,7 @@ function getTblColumns(bi,reviewer) {
 		      makeColumn('name-col','Name',function(a,b) {return a.nsorder - b.nsorder;},
 				 function(a,cookie) {
 				   return TD(A({href:'appreview.html?id='+a.id,
-						       target:'app'+a.id},a.info.name),
+						       target:'app'+a.id},a.info.lastname + ', ' + a.info.firstname),
 					     reviewer.auth.role == 'admin' ? DIV(A({href:'login.html?switch='+authCookie+'&user_id='+a.id},'(Log in as)')) : SPAN(),
 					     P(
 					       A({href:'http://images.google.com/images?q='+encodeURI('"'+a.info.name+'"'),
