@@ -18,8 +18,8 @@ AppTableWidget.prototype.makePaginator = function(numPapersB,cl) {
   return pw;
 }
   AppTableWidget.prototype.makeSorter = function(columns) {
-    var initsort = undefined;
-    if(sortcookie) initsort = sortcookie.parseJSON();
+    var initsort = [{col:0,order:-1}];
+    //    if(sortcookie) initsort = sortcookie.parseJSON();
     var hsw = new HeaderSortWidget(columns,initsort);
     hsw.behaviors.cols.transform_b(function(sc) {
 	setCookie('appsort',10,sc.toJSONString());
@@ -797,7 +797,7 @@ function makeFilterClause(basicInfo,reviewer,baseFilter) {
     SELECT(OPTION({ value: 'test_score' }, "Test Score"),
 	   OPTION({ value: 'score' }, "Custom Score"),
            OPTION({ value: 'gender' }, "Gender"),
-           OPTION({ value: 'ethnicity' }, "Ethnicity"),
+	   //           OPTION({ value: 'ethnicity' }, "Ethnicity"),
 	   OPTION({ value: 'citizenship' }, "Citizenship"));
 
   var filterTypeB = extractValue_b(filterSelect);
