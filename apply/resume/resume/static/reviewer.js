@@ -1222,6 +1222,17 @@ function makeWithOutFilter(basicInfo,elt,componentId) {
     });
 }
 
+function draftFilter(reviewer) {
+  
+  return extractValue_b('filterDraft').lift_b(function (isActive) {
+    return isActive ?
+      function (app) { return filter(function(appid) { return app.id == appid; },
+				     reviewer.drafts).size() >= 1; }
+      : filterNone;
+  });
+  
+}
+
 
 function initializeFilters(basicInfo, hiddensB, reviewer) {
   toggleDisplay($('allFilters'),
@@ -1234,6 +1245,7 @@ function initializeFilters(basicInfo, hiddensB, reviewer) {
 		       [ joinFilters, nameFilter(), 
 			 areaFilter(basicInfo),
 			 reviewFilter(basicInfo),
+			 draftFilter(reviewer),
 			 letterFilter(),
 			 institutionFilter(),
 			 makeScoreFilters(basicInfo, reviewer),

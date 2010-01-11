@@ -1565,8 +1565,9 @@ h2 {
 		if not rev:
 			raise ResumeFatalException('User is not a reviewer!')
 		return toJSON({'auth':rev.auth,
-						'hiddens':[x.id for x in rev.hiddens],
-						'highlights':[x.applicantID for x in Highlight.cSelectBy(self,highlightee=rev)]})
+			       'hiddens':[x.id for x in rev.hiddens],
+			       'highlights':[x.applicantID for x in Highlight.cSelectBy(self,highlightee=rev)],
+			       'drafts':[x.applicantID for x in Review.cSelectBy(self,reviewer=rev) if x.draft and x.comments != '']})
 
 	def destroy(self):
 		allTableClasses = [Area,Review,Reviewer,Reference,ComponentType,Component,Applicant,UnverifiedUser,AuthInfo,ScoreCategory,ScoreValue]
