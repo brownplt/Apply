@@ -1147,6 +1147,13 @@ function reviewFilter(basicInfo) {
 		  return review.rname == reviewer;
 		});
 	  }
+	  else if (type == "referral") {
+	    if(applicant.info.referrals && applicant.info.referrals.size() >= 1) {
+	      return applicant.info.referrals.ormap(function(ref) {
+		return reviewer.indexOf(ref.rname) >= 0;
+	      });
+	    }
+	  }
 	  else /* something went wrong, skip this filter */ {
 	    return true;
 	  }

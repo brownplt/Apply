@@ -571,6 +571,10 @@ class Applicant(SQLObject,SqlJson):
 			return [x.type.id for x in self.components if x.type.type=='statement' and x.lastSubmitted != 0]
 		def getTestScores():
 			return [{'id':x.type.id,'value':x.value,'verified':x.verified} for x in self.components if x.type.type=='test_score' and x.lastSubmitted != 0]
+		def getReferrals():
+			return [{'id':r.highlighteeID,
+				 'rname':r.highlighteeName}
+				for r in (self.highlights + self.pending_highlights)]
 		#if self.json == '':
 		self.json = toJSON(
 			{'id':self.id,
@@ -589,7 +593,8 @@ class Applicant(SQLObject,SqlJson):
 			 'statements':getStatements(),
 			 'test_scores':getTestScores(),
 			 'institutions':self.institutions,
-			 'country':self.country})
+			 'country':self.country,
+			 'referrals':getReferrals()})
 		return self.json
 
 	def namesort(self):
