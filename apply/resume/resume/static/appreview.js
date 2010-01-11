@@ -113,6 +113,14 @@ function reviewsVisible(auth, reviewers, reviews) {
 
   if(!this_reviewer.committee) { return true; }
 
+  if(filter(function(rev) { return rev.advocate == 'advocate'; }, reviews).size() >=2) {
+    return true;
+  }
+
+  if(filter(function(rev) { return rev.advocate == 'detract'; }, reviews).size() >=2) {
+    return true;
+  }
+
   var this_review = filter(function(rev) {return rev.reviewerName == this_reviewer.uname;},reviews);
   if(this_review.length == 0) { return false; }
   else { return true; }
