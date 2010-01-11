@@ -238,10 +238,12 @@ function getTblColumns(bi,reviewer) {
   var standardCols = [
 		      makeColumn('name-col','Name',function(a,b) {return a.nsorder - b.nsorder;},
 				 function(a,cookie) {
-				   return TD(A({href:'appreview.html?id='+a.id},a.info.name),
+				   return TD(A({href:'appreview.html?id='+a.id,
+						       target:'app'+a.id},a.info.name),
 					     reviewer.auth.role == 'admin' ? DIV(A({href:'login.html?switch='+authCookie+'&user_id='+a.id},'(Log in as)')) : SPAN(),
 					     P(
-					       A({href:'http://images.google.com/images?q='+encodeURI('"'+a.info.name+'"')},
+					       A({href:'http://images.google.com/images?q='+encodeURI('"'+a.info.name+'"'),
+							 target:'search'+a.id},
 						 IMG({className:'icon',src:'images/imagesearch.png',alt:'Image Search'})),
 					       map(function(wc) {
 						   return SPAN('[',A({href:showWebsite(wc.value)},wc.name),']',' ');
