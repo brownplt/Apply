@@ -113,11 +113,11 @@ function reviewsVisible(auth, reviewers, reviews) {
 
   if(!this_reviewer.committee) { return true; }
 
-  if(filter(function(rev) { return rev.advocate == 'advocate'; }, reviews).size() >=2) {
+  if(filter(function(rev) { return rev.advocate == 'advocate'; }, reviews).length >= 2) {
     return true;
   }
 
-  if(filter(function(rev) { return rev.advocate == 'detract'; }, reviews).size() >=2) {
+  if(filter(function(rev) { return rev.advocate == 'detract'; }, reviews).length == 2) {
     return true;
   }
 
