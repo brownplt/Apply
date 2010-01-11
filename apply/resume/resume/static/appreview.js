@@ -300,10 +300,11 @@ function loader() {
 				:
 				LI({className:'unsubmitted'},stmt.name);
 			      return li;
-			    },comps.statements)
-			  /*			  LI({style:{textAlign:'center'}},
-			     A({href:'Applicant/'+comps.id+'/getCombined.pdf?cookie='+authCookie},
-			     'Get Combined PDF'))*/
+			  },comps.statements),
+			  LI({style:{textAlign:'center'}},
+			     SPAN(A({href:'Applicant/'+comps.id+'/getCombined.pdf?cookie='+authCookie},IMG({alt:'Get Combined PDF',title:'Get Combined PDF',border:0,src:'images/pdficon_small.gif'})),
+				  A({href:'Applicant/'+comps.id+'/getCombined.pdf?cookie='+authCookie},'Get Combined PDF')))
+
 			  ));
 	  }),'personal','beginning');
 
