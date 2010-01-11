@@ -1112,8 +1112,6 @@ function reviewFilter(basicInfo) {
     .lift_b(grayOut),
     'filterReviewSection', 'style', 'color');
 
-
-
   var filterFn = function(type,reviewers,reviewersRaw) {
     setCookie('filterReviewType',30,type);
     setCookie('filterReviewer',30,reviewersRaw);
@@ -1230,6 +1228,11 @@ function makeWithOutFilter(basicInfo,elt,componentId) {
 }
 
 function draftFilter(reviewer) {
+
+  insertValueB(extractValue_b('filterDraft').lift_b(function (isActive) {
+    return isActive; })
+    .lift_b(grayOut),
+    'filterDraftSection', 'style', 'color');
   
   return extractValue_b('filterDraft').lift_b(function (isActive) {
     return isActive ?
