@@ -639,7 +639,7 @@ for information on contacting the server administrator.
 
 	def handle_pending_highlight(self,highlightee):
 		user = UnverifiedUser.cSelectOne(self.department, id=int(highlightee))
-		if (not user) or (user.role != 'reviewer'):
+		if (not user) or (user.role != 'reviewer' and user.role != 'admin'):
 			raise ResumeFatalException('No pending user with that ID.')
 		ph = PendingHighlight.cSelectOne(self.department, applicantID=self.id, highlighteeID=user.id)
 		if not ph:
