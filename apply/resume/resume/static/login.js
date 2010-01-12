@@ -82,7 +82,14 @@ function loader() {
 
   if($URL('switch')) {
     switch_login_e = getFilteredWSO_e(onLoadTimeE.constant_e(genRequest({url:'Auth/logInAs',fields:{cookie:$URL('switch'),user_id:$URL('user_id')}})));
-    switch_login_e.transform_e(function(r) {if (!r.exception) { window.location = 'applicant.html'; } });
+    switch_login_e.transform_e(function(r) {if (!r.exception) { 
+      if(r.role == 'applicant') {
+	window.location = 'applicant.html'; 
+      }
+      else {
+	window.location = 'reviewer.html';
+      }
+    } });
   }
 
   onLoadTimeE.sendEvent('Loaded!');

@@ -347,14 +347,16 @@ class Authenticator(object):
 	def log_in_as(self,ipaddr,cookie,user_id,**kwargs):
 		if cookie is None:
 			raise AuthException('No User Found')
-		applicant = resume.Applicant.cSelectOne(kwargs[self.ctxtfld],id=int(user_id))
-		if(not applicant):
-			raise AuthException("Nonexistent user")
+		user = resume.Applicant.cSelectOne(kwargs[self.ctxtfld],id=int(user_id))
+		if(not user):
+			user = resume.Reviewer.cSelectOne(kwargs[self.ctxtfld],id=int(user_id))
+			if (not user):
+				raise AuthException("Nonexistent user")
 		
-		newuser = applicant.auth
+		newuser = user.auth
 
-		if newuser.role != 'applicant':
-			raise AuthException("Denied")
+		#if newuser.role != 'applicant':
+		#	raise AuthException("Denied")
 		u = authUser(self.cookiecls,ipaddr,cookie)
 		if not u.role == 'admin':
 			raise AuthException('Cookie no longer valid, please log in again')
