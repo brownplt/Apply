@@ -575,26 +575,26 @@ class Applicant(SQLObject,SqlJson):
 			return [{'id':r.highlighteeID,
 				 'rname':r.highlighteeName}
 				for r in (self.highlights + self.pending_highlights)]
-		#if self.json == '':
-		self.json = toJSON(
-			{'id':self.id,
-			 'gender':self.gender,
-			 'position': self.position.id,
-			 'ethname':self.ethname,
-			 'name':self.name,
-			 'areas':self.areas,
-			 'refletters':self.refletters,
-			 'rejected':self.rejected,
-			 'firstname': self.firstname,
-			 'lastname': self.lastname,
-			 'reviews':getReviews(),
-			 'comments':getComments(),
-			 'web':getWeb(),
-			 'statements':getStatements(),
-			 'test_scores':getTestScores(),
-			 'institutions':self.institutions,
-			 'country':self.country,
-			 'referrals':getReferrals()})
+		if self.json == '':
+			self.json = toJSON(
+				{'id':self.id,
+				 'gender':self.gender,
+				 'position': self.position.id,
+				 'ethname':self.ethname,
+				 'name':self.name,
+				 'areas':self.areas,
+				 'refletters':self.refletters,
+				 'rejected':self.rejected,
+				 'firstname': self.firstname,
+				 'lastname': self.lastname,
+				 'reviews':getReviews(),
+				 'comments':getComments(),
+				 'web':getWeb(),
+				 'statements':getStatements(),
+				 'test_scores':getTestScores(),
+				 'institutions':self.institutions,
+				 'country':self.country,
+				 'referrals':getReferrals()})
 		return self.json
 
 	def namesort(self):
