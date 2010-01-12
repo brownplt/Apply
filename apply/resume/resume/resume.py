@@ -1139,14 +1139,14 @@ for information on contacting the server administrator.
 	  return cjson.encode(dict)
 	
 	def handle_requestReference(self,name,institution,email):
-		if Reference.cSelectOne(self.department,applicant=self,email=email):
-			raise ResumeException('You have already asked this person to write you a letter. If you wish to contact this person, please do so outside the Resume system.')
+		#if Reference.cSelectOne(self.department,applicant=self,email=email):
+		#	raise ResumeException('You have already asked this person to write you a letter. If you wish to contact this person, please do so outside the Resume system.')
 		ncode = random.randint(0,999999999)
 		ref = Reference(code = ncode,applicant = self,submitted=0,filesize=0,
 			name=name,institution=institution,email=email,department=self.department)
 		self.department.updateLastChange(self)
-		if self.position.autoemail:
-			ref.sendReferenceRequest()
+		#if self.position.autoemail:
+		#	ref.sendReferenceRequest()
 		return ref.toJSON()
 
 
@@ -1313,7 +1313,7 @@ To login after your account has been created, you can go to:
 			raise ResumeFatalException('You have reached this page in error. '
 				+ 'Please contact the system administrator (position unspecified)')
 		ap = Applicant(department=dept,auth=ai,gender=gender,firstname=firstname,
-						lastname=lastname,position=applicantPosition,ethnicity=ethnicity)
+						lastname=lastname,position=applicantPosition,ethnicity=ethnicity,country='Unknown')
 		
 		for uvu in UnverifiedUser.cSelectBy(dept,email=ai.email):
 			uvu.destroySelf()
