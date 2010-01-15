@@ -928,7 +928,7 @@ for information on contacting the server administrator.
 						
 
 #		return str(binned_scores)
-		return ','.join(map(lambda score : score == ',' and ',' or score.value + ',' + score.date, max_scores))
+		return ','.join(map(lambda score : score == ',' and ', N/A , N/A ' or score.value + ',' + score.date, max_scores))
 
 	def institutionsCSV(self):
 		max_to_show = 4
@@ -951,7 +951,7 @@ for information on contacting the server administrator.
 				   institutions))
 		extrastr = ''
 		for i in range(0,fields_to_show):
-			extrastr += ','
+			extrastr += ', '
 		
 		for i in range(0,max_to_show-len(institutions)):
 			ret += extrastr
@@ -965,14 +965,57 @@ for information on contacting the server administrator.
 
 		ret = []
 
-		for i in range(0,2):
+		for i in range(0,max_refs):
 			if i > (len(references) - 1):
-				ret.append(',')
+				ret.append(', , ')
 			else:
-				ret.append(references[i].name +',' +references[i].institution)
+				ret.append(references[i].name +', ' +references[i].institution)
 			
 
 		return ','.join(ret)
+
+	def reviewsCSV(self):
+		ret = "\""
+
+		reviews = [x for x in self.reviews]
+
+		for r in reviews:
+			ret += r.reviewer.name + ' (' + r.reviewer.uname + ')' + '\n'
+			ret += '(' + r.advocate + ')' + '\n'
+			for s in r.scores:
+				ret += s.value.category.name + ': ' + str(s.value.number) + '\n'
+			ret += '\n' + r.comments
+			ret += '\n\n'
+
+		ret += "\""
+
+		return ret
+
+	def scoresCSV(self):
+		def makeSingleScoreCSV(id):
+			ret = ""
+			reviews = [x for x in self.reviews]
+			score_count = 0
+			score_total = 0
+			for r in reviews:
+				for s in r.scores:
+					if(s.value.category.id == id):
+						score_total += s.value.number
+						score_count += 1
+						ret += str(s.value.number) + ' (' + r.reviewer.uname + '); '
+			if score_total > 0:
+				ret += ',' + str(float(score_total) / float(score_count))
+
+			if ret == "":
+				ret = ", , "
+			return ret
+
+		main_ret = []
+
+		for s in [x for x in ScoreCategory.select()]:
+			main_ret.append(makeSingleScoreCSV(s.id))
+
+		return ','.join(main_ret)
 		
 
 	def makeCSV(self):
@@ -1615,7 +1658,7 @@ h2 {
 			return ','.join(ret)
 		def scoreHeader():
 			scores = ScoreCategory.cSelectBy(self)
-			return ','.join(map(lambda score : score.shortform, scores))
+			return ','.join(map(lambda score : score.name + ',' + score.name + ' avg', scores))
 		def referenceHeaders():
 			return ','.join(['Name',
 					 'Institution',
@@ -1640,7 +1683,9 @@ h2 {
 					       a.contactCSV(),
 					       a.testScoreCSV(),
 					       a.institutionsCSV(),
-					       a.referencesCSV()
+					       a.referencesCSV(),
+					       a.reviewsCSV(),
+					       a.scoresCSV()
 					       ]),
 				     applicants)
 		filestring += '\n' + '\n'.join(applicant_rows)
