@@ -63,8 +63,8 @@ function hasLettersBy(writerPatterns) {
   return function(applicant) {
     return applicant.info.refletters.ormap(function(letter) {
       return writerPatterns.ormap(function(pattern) {
-        return (letter.name.indexOf(pattern) >= 0 ||
-                letter.email.indexOf(pattern) >= 0);
+        return (letter.name.toLowerCase().indexOf(pattern.toLowerCase()) >= 0 ||
+                letter.email.toLowerCase().indexOf(pattern.toLowerCase()) >= 0);
       });
     });
   }
@@ -74,7 +74,7 @@ function hasInstitutionWithName(namePatterns) {
   return function(applicant) {
     return applicant.info.institutions.ormap(function(inst) {
       return namePatterns.ormap(function(pattern) {
-	return inst.name.indexOf(pattern) >= 0;
+	return inst.name.toLowerCase().indexOf(pattern.toLowerCase()) >= 0;
       });
     });
   }
