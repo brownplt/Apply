@@ -681,7 +681,7 @@ function reviewGreaterCountFilter() {
       if (typeof(x) == 'number' && x >= 0) {
 	setCookie('reviewGreaterCountFilter',30,x.toString());
 	return function(app) {
-	  return app.info.reviews.length >= x;
+	  return app.info.reviews.length > x;
 	};
       }
       else {
