@@ -105,6 +105,9 @@ function createInstitutionDOM(institutions, curAuth, ai) {
 }
 
 function reviewsVisible(auth, reviewers, reviews) {
+  // Remove this eventually -- quickest possible fix.
+  return true;
+
   if(auth.role == 'admin') { return true; }
 
   var this_reviewer = filter(function(revr) {
