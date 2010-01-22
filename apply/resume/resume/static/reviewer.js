@@ -103,7 +103,7 @@ function ApplicantEntry(rinfo,basicInfo,app,cols,nsorder) {
 	me.info.rejected = sr.rejected;
 	refilterE.sendEvent('r');
       });
-    this.rejectDom = P(STRONG('Reject? '),rejectWidget.dom);
+    this.rejectDom = P(rejectWidget.dom,STRONG('Reject? '));
   }
 
   this.acceptDom = SPAN();
@@ -117,7 +117,7 @@ function ApplicantEntry(rinfo,basicInfo,app,cols,nsorder) {
 	me.info.accepted = sr.accepted;
 	refilterE.sendEvent('r');
       });
-    this.acceptDom = P(STRONG('Accept? '),acceptWidget.dom);
+    this.acceptDom = P(acceptWidget.dom,STRONG('Accept? '));
   }
 
   this.doms = null;
@@ -472,9 +472,13 @@ function loader() {
 
 }
 
-function toggleDisplay(elt,hideShowE) { 
+function toggleDisplay(elt,titleElt,hideShowE) { 
+  titleElt.innerHTML += (elt.style.display == 'none' ? 
+			 '[show]'
+			 : '[hide]');
   hideShowE.lift_e(function(isVisible) {
       elt.style.display = isVisible ? 'block': 'none';
+      titleElt.innerHTML = isVisible ? '[hide]' : '[show]';
     });
 };
 
@@ -658,6 +662,30 @@ function reviewCountFilter() {
       }
       else {
 	setCookie('reviewCountFilter',30,"");
+	return filterNone;
+      }
+    });
+} 
+
+function reviewGreaterCountFilter() {
+  $('filterGreaterReviewLimit').value = getCookie("reviewGreaterCountFilter") || "";
+  
+  var numReviewsB = $B('filterGreaterReviewLimit').lift_b(parseInt);
+	
+  insertValueB(numReviewsB.lift_b(function(x) { 
+	return typeof(x) == "number" && x >= 0;
+      }).lift_b(grayOut),'filterGreaterNumReviewsSection','style','color');
+
+  
+  return numReviewsB.lift_b(function(x) {
+      if (typeof(x) == 'number' && x >= 0) {
+	setCookie('reviewGreaterCountFilter',30,x.toString());
+	return function(app) {
+	  return app.info.reviews.length >= x;
+	};
+      }
+      else {
+	setCookie('reviewGreaterCountFilter',30,"");
 	return filterNone;
       }
     });
@@ -1240,11 +1268,28 @@ function draftFilter(reviewer) {
 
 
 function initializeFilters(basicInfo, hiddensB, reviewer) {
-  toggleDisplay($('allFilters'),
+  toggleDisplay($('allFilters'),$('toggleFilters'),
 		clicks_e($('toggleFilters')) // TODO: + / - text
 		.collect_e(false,function(_,prev) { 
 		    document.notifyDemo({ action: 'filtertoggle' });
 		    return !prev; }));
+
+  toggleDisplay($('appDataFilters'),$('toggleAppData'),
+		clicks_e($('toggleAppData')) // TODO: + / - text
+		.collect_e(true,function(_,prev) { 
+		    return !prev; }));
+
+
+  toggleDisplay($('reviewFilters'),$('toggleReview'),
+		clicks_e($('toggleReview')) // TODO: + / - text
+		.collect_e(true,function(_,prev) { 
+		    return !prev; }));
+
+  toggleDisplay($('filterComposable'),$('toggleComposable'),
+		clicks_e($('toggleComposable')) // TODO: + / - text
+		.collect_e(true,function(_,prev) { 
+		    return !prev; }));
+
 
   var f = lift_b.apply(this,
 		       [ joinFilters, nameFilter(), 
@@ -1261,6 +1306,7 @@ function initializeFilters(basicInfo, hiddensB, reviewer) {
 			 acceptedFilter(),
 			 letterCountFilter(),
 			 reviewCountFilter(),
+			 reviewGreaterCountFilter(),
 			 hiddenFilter(basicInfo, hiddensB)]);
 
 
