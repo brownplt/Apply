@@ -1097,7 +1097,7 @@ for information on contacting the server administrator.
 			comp = Component.cSelectOne(self.department,applicant=self,type=ct)
 			if comp:
 				lcomps.append(os.path.join(config.uploadPath,'%d-%d-pdf' % (self.id,ct.id)))
-		lcomps.reverse()
+		#lcomps.reverse()
 		tdir = tempfile.mkdtemp()
 
 		commandstr = ('pdftk %s cat output %s' % 
