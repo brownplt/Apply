@@ -740,6 +740,35 @@ function letterCountFilter() {
     });
 }
 
+function letterLessCountFilter() {
+  $('filterLessLetterLimit').value = getCookie("letterLessCountFilter") || "";
+  
+  var numLettersB = 
+    $B('filterLessLetterLimit').lift_b(parseInt);
+
+  insertValueB(numLettersB.lift_b(function(x) { 
+	return typeof(x) == "number" && x >= 0;
+      }).lift_b(grayOut),'filterLessNumLettersSection','style','color');
+
+  return numLettersB.lift_b(function(x) {
+      if (typeof(x) == 'number' && x >= 0) {
+	setCookie('letterLessCountFilter',30,x.toString());
+	return function(app) {
+	  var numLetters = app.info.refletters.foldl(0,function(acc,letter) {
+	      return letter.submitted > 0 ? acc + 1 : acc;
+	    });
+	  return numLetters < x;
+	};
+      }
+      else {
+	setCookie('letterLessCountFilter',30,"");
+	return filterNone;
+      }
+    });
+}
+
+
+
 function hiddenFilter(basicInfo, hiddensB) {
   $('filterHidden').checked = getCookie("hiddenFilter") === "true" || false; 
  
@@ -1328,6 +1357,7 @@ function initializeFilters(basicInfo, hiddensB, reviewer) {
 			 rejectedFilter(),
 			 acceptedFilter(),
 			 letterCountFilter(),
+			 letterLessCountFilter(),
 			 reviewCountFilter(),
 			 reviewGreaterCountFilter(),
 			 hiddenFilter(basicInfo, hiddensB)]);
