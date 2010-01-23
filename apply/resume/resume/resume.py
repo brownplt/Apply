@@ -623,7 +623,7 @@ If you have trouble, visit
 
 for information on contacting the server administrator.
 		
-[This message was generated automatically by the Apply application system.]
+[This message was generated automatically by the Apply admissions system.]
 
 %(orgname)s"""
 		email = rev.email
@@ -984,7 +984,7 @@ for information on contacting the server administrator.
 			ret += '(' + r.advocate + ')' + '\n'
 			for s in r.scores:
 				ret += s.value.category.name + ': ' + str(s.value.number) + '\n'
-			ret += '\n' + r.comments
+			ret += '\n' + r.comments.replace("\"","\'")
 			ret += '\n\n'
 
 		ret += "\""
