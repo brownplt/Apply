@@ -531,6 +531,28 @@ function nameFilter() {
 };
 
 
+function noAreaFilter(basicInfo) {
+  var initCookie = getCookie('noAreaFilter');
+  var checked_b = extractValue_b('noAreasFilter');
+  var isInUse = function(checkbox) { return checkbox; }
+
+  insertValueB(checked_b.lift_b(isInUse).lift_b(grayOut),
+	       $('noAreasFilterArea'), 'style', 'color');
+
+  var filterFunction = function(checked) {
+    setCookie('noAreaFilter',checked);
+    if(checked) {
+      return function(applicant) {
+	return applicant.info.areas.length == 0;
+      }
+    }
+    return filterNone;
+  };
+
+  return lift_b(filterFunction,checked_b);
+
+}
+
 function areaFilter(basicInfo) {
   var initCookie = getCookie('areaFilter');
   var init = (initCookie && eval(initCookie)) || { };
@@ -1294,6 +1316,7 @@ function initializeFilters(basicInfo, hiddensB, reviewer) {
   var f = lift_b.apply(this,
 		       [ joinFilters, nameFilter(), 
 			 areaFilter(basicInfo),
+			 noAreaFilter(basicInfo),
 			 reviewFilter(basicInfo),
 			 draftFilter(reviewer),
 			 letterFilter(),
