@@ -177,7 +177,7 @@ function reviewerTable(allrevs) {
 	      }),
 	      makeColumn('name','Full Name',function(a, b) {return stringCmp(a.name,b.name);},function(r, cookie) {return TD(r.name);}),
 	      makeColumn('email','Email',function(a, b) {return stringCmp(a.email,b.email);},function(r, cookie) {return TD(r.email);}),
-	      makeColumn('committee','On Committee?',
+	      makeColumn('committee','Comm?',
 			 function(a, b) {return (a.committee ? 1 : 0) + (b.committee ? -1 : 0); },
 			 function(r, cookie) {return TD(r.committee ? 'Yes' : 'No');}),
 	      makeColumn('admin','Admin?',
