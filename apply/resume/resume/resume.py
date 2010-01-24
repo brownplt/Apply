@@ -937,7 +937,7 @@ for information on contacting the server administrator.
 						
 
 #		return str(binned_scores)
-		return ','.join(map(lambda score : score == ',' and ', N/A , N/A ' or score.value + ',' + score.date, max_scores))
+		return ','.join(map(lambda score : score == ',' and ', N/A ' or score.value, max_scores))
 
 	def institutionsCSV(self):
 		max_to_show = 4
@@ -950,7 +950,7 @@ for information on contacting the server administrator.
 			institutions = institutions[0:max_to_show - 1]
 
 		ret = ','.join(map(lambda inst :
-				   inst.name and inst.name or ' ',
+				   inst.name and ("\"" + inst.name + "\"") or ' ',
 				   institutions))
 		extrastr = ''
 		for i in range(0,fields_to_show):
@@ -1652,7 +1652,7 @@ h2 {
 		def testScoreHeader():
 			tests = [x for x in ComponentType.cSelectBy(self,type='test_score')]
 			tests.sort(key=(lambda test : test.id))
-			return ','.join(map(lambda test : test.short + ' Score,' + test.short + ' Date',tests))
+			return ','.join(map(lambda test : test.short + ' Score',tests))
 		def institutionHeader():
 			max_to_show = 4
 			single = 'Previous Inst. Name'
