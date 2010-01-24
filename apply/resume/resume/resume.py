@@ -72,7 +72,7 @@ def saveCSV(fstr,prefix):
 	except OSError, e:
 		pass
 	outfile = open(os.path.join(config.tempPath,'%s.csv' % prefix),'w')
-	outfile.write(fstr)
+	outfile.write(fstr.encode("utf-8"))
 	outfile.close()
 				    
 class SqlJson(genSqlJson):
@@ -1705,9 +1705,9 @@ h2 {
 		filestring += '\n' + '\n'.join(applicant_rows)
 		filename = 'full-%s' % self.name
 		saveCSV(filestring, filename)
+			
 		return HttpFileResult(os.path.join(config.tempPath,'%s.csv' % filename),'application/csv')
-	
-				      
+						      
 				      
 
 	def handle_getFullCSV(self):
