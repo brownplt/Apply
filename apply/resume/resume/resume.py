@@ -379,8 +379,8 @@ class Reference(SQLObject,SqlJson):
 	lastRequested = IntCol(default=0)
 	lastRequestedStr = property(fget = lambda self:convertTime(self.lastRequested))
 	
-	outputFields = ['id','appname','name','institution','email','submitted',
-									'lastRequested','lastRequestedStr','code']
+	outputFields = ['id','appname','name','institution','email','submitted','lastRequested','lastRequestedStr','code']
+
 
 	#TODO - remove all instances of code from the references
 	def toDict(self,showReceivedInfo):
@@ -876,7 +876,8 @@ for information on contacting the server administrator.
 				  self.firstname,
 				  self.email,
 				  self.gender,
-				  self.ethnicity])		
+				  self.ethnicity,
+				  self.country])		
 
 	def contactCSV(self):
 		contactlongs = self.getContactLong()
@@ -905,6 +906,14 @@ for information on contacting the server administrator.
 		ret = ','.join(map(lambda v : v, out))
 		return ret
 
+	def acceptedCSV(self):
+		if(self.accepted):
+			return 'Acc'
+		elif(self.rejected):
+			return 'Rej'
+		else:
+			return 'None'
+
 	def testScoreCSV(self):
 		scores = self.getTestScores()
 		tests = [x for x in ComponentType.cSelectBy(self.department,type='test_score')]
@@ -932,7 +941,7 @@ for information on contacting the server administrator.
 
 	def institutionsCSV(self):
 		max_to_show = 4
-		fields_to_show = 7
+		fields_to_show = 1
 		institutions = self.institutions
 		institutions.sort(reverse = True, key = lambda inst : inst.start_date)
 
@@ -941,13 +950,7 @@ for information on contacting the server administrator.
 			institutions = institutions[0:max_to_show - 1]
 
 		ret = ','.join(map(lambda inst :
-				   ','.join([inst.name and inst.name or ' ',
-					     inst.start_date and inst.start_date or ' ',
-					     inst.end_date and inst.end_date or ' ',
-					     inst.gpa and str(inst.gpa) or ' ',
-					     inst.gpa_max and str(inst.gpa_max) or ' ',
-					     inst.major and inst.major or ' ',
-					     inst.degree and inst.degree.shortform or ' ']),
+				   inst.name and inst.name or ' ',
 				   institutions))
 		extrastr = ''
 		for i in range(0,fields_to_show):
@@ -992,32 +995,31 @@ for information on contacting the server administrator.
 		return ret
 
 	def scoresCSV(self):
-		def makeSingleScoreCSV(id):
-			ret = ""
-			reviews = [x for x in self.reviews]
-			score_count = 0
-			score_total = 0
-			for r in reviews:
-				for s in r.scores:
-					if(s.value.category.id == id):
-						score_total += s.value.number
-						score_count += 1
-						ret += str(s.value.number) + ' (' + r.reviewer.uname + '); '
-			if score_total > 0:
-				ret += ',' + str(float(score_total) / float(score_count))
+		ret = []
+		scoreTotal = 0
+		scoreCount = 0
+		for s in [x for x in ScoreCategory.cSelectBy(self.department)]:
+			for r in [x for x in Reviewer.cSelectBy(self.department)]:
+				found = False
+				for rev in [x for x in self.reviews]:
+					for score in rev.scores:
+						if (score.value.category.id == s.id) and (rev.reviewer == r):
+							ret.append(str(score.value.number))
+							scoreTotal += score.value.number
+							scoreCount += 1
+							found = True
+				if(not found):
+					ret.append(' ')
+			if scoreCount > 0:
+				avg = float(scoreTotal)/float(scoreCount)
+				ret.append(str(avg))
+			else:
+				ret.append(' ')
+			scoreTotal = 0
+			scoreCount = 0
 
-			if ret == "":
-				ret = ", , "
-			return ret
-
-		main_ret = []
-
-		for s in [x for x in ScoreCategory.select()]:
-			main_ret.append(makeSingleScoreCSV(s.id))
-
-		return ','.join(main_ret)
-		
-
+		return ','.join(ret)
+					    
 	def makeCSV(self):
 		def makeContactCSV():
 			contactlongs = self.getContactLong()
@@ -1638,27 +1640,37 @@ h2 {
 	# Returns a csv of all the non-rejected applicants
 	def getFullCSV(self, applicants):
 		def personalHeader():
-			return 'Username,Last,First,Email,Gender,Ethnicity'
+			return 'Username,Last,First,Email,Gender,Ethnicity,Country'
 		def contactHeader():
 			longs = [x for x in ComponentType.cSelectBy(self,type='contactlong')]
 			shorts = [x for x in ComponentType.cSelectBy(self,type='contactshort')]
 			webs = [x for x in ComponentType.cSelectBy(self,type='contactweb')]
 			contacts = longs + shorts + webs
 			return ','.join(map(lambda c : c.name, contacts))
+		def acceptedHeader():
+			return 'Acc/Rej/None'
 		def testScoreHeader():
 			tests = [x for x in ComponentType.cSelectBy(self,type='test_score')]
 			tests.sort(key=(lambda test : test.id))
 			return ','.join(map(lambda test : test.short + ' Score,' + test.short + ' Date',tests))
 		def institutionHeader():
 			max_to_show = 4
-			single = 'Name,Start,End,GPA,GPA Max,Major,Degree'
+			single = 'Previous Inst. Name'
 			ret = []
 			for i in range(0,max_to_show):
 				ret.append(single)
 			return ','.join(ret)
 		def scoreHeader():
-			scores = ScoreCategory.cSelectBy(self)
-			return ','.join(map(lambda score : score.name + ',' + score.name + ' avg', scores))
+			scores = [x for x in ScoreCategory.cSelectBy(self)]
+			reviewers = [x for x in Reviewer.cSelectBy(self)]
+			ret = []
+			for s in scores:
+				for r in reviewers:
+					ret.append(r.uname + '(' + s.name + ')')
+				ret.append('Average (' + s.name + ')')
+			return ','.join(ret)
+			
+				
 		def referenceHeaders():
 			return ','.join(['Name',
 					 'Institution',
@@ -1670,7 +1682,8 @@ h2 {
 			return 'reviews'
 		
 		headerstring = ','.join([personalHeader(),
-					 contactHeader(),
+					 #contactHeader(),
+					 acceptedHeader(),
 					 testScoreHeader(),
 					 institutionHeader(),
 					 referenceHeaders(),
@@ -1680,7 +1693,8 @@ h2 {
 		filestring = headerstring
 		applicant_rows = map(lambda a :
 				     ','.join([a.personalCSV(),
-					       a.contactCSV(),
+					       #a.contactCSV(),
+					       a.acceptedCSV(),
 					       a.testScoreCSV(),
 					       a.institutionsCSV(),
 					       a.referencesCSV(),
