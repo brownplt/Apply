@@ -1,11 +1,3 @@
-
-function displayPositions(basicInfo) {
-  for (var ix = 0; ix < basicInfo.positions.length; ix++) {
-    $('position').appendChild(OPTION({ value: basicInfo.positions[ix].id },
-                                     basicInfo.positions[ix].name));
-  };
-  $('positionBlock').style.display = 'block';
-};
     
 
 function loader() {
@@ -13,11 +5,12 @@ function loader() {
   var exceptsE = captureServerExcepts(); 
 
   var onLoadTimeE = receiver_e();
-
+  
+  var position = null;
   var basicInfoE = getBasicInfoE(onLoadTimeE);
   basicInfoE.lift_e(function(bi) { 
       setHeadAndTitle(bi,'Create Account'); 
-      displayPositions(bi);
+      position = bi.positions[0].id;
     });
 	
   var veri = $URL('verify');
@@ -28,10 +21,6 @@ function loader() {
       var password = $('password').value;
 
       var repassword = $('repassword').value;
-
-      if ($('position').value == "nothing") {
-	return { error: 'Please choose the position you are applying for.' };
-      };
 
       if (!$('firstname').value) {
 	return { error: 'Please enter your first name.' };
@@ -55,7 +44,7 @@ function loader() {
 	      firstname: $('firstname').value,
 	      lastname: $('lastname').value,
 	      gender:$('gender').value,
-	      position: parseInt($('position').value),
+	      position: position,
 	      ethnicity:$('ethnicity').value}
 	});
     });
