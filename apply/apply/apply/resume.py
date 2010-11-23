@@ -1759,11 +1759,11 @@ h2 {
 			shortform='Student', autoemail = True)
 		
 		ComponentType(department=dept,type='statement',name='Resume',short='Resume')
-		ComponentType(department=dept,type='statement',name='Personal Statement',short='research')
-		ComponentType(department=dept,type='statement',name='Full Application',short='full')
-		ComponentType(department=dept,type='contactweb',name='Web Page',short='home')
-		ComponentType(department=dept,type='contactshort',name='Phone',short='phone')
-		ComponentType(department=dept,type='contactlong',name='Postal Address',short='postal')
+		ComponentType(department=dept,type='statement',name='Personal Statement',short='Research')
+		ComponentType(department=dept,type='statement',name='Full Application',short='Full')
+		ComponentType(department=dept,type='contactweb',name='Web Page',short='Home')
+		ComponentType(department=dept,type='contactshort',name='Phone',short='Phone')
+		ComponentType(department=dept,type='contactlong',name='Postal Address',short='Postal')
 
 		ComponentType(department=dept,type='test_score',name='GRE Verbal',short='GREV')
 		ComponentType(department=dept,type='test_score',name='GRE Quantitative',short='GREQ')
