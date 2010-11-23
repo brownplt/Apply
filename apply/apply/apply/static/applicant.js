@@ -23,7 +23,7 @@ function YearMonthWidget() {
 				    return mo < 10 ? '0' + mo : mo;},  __MONTHS)))]);
 }
 
-__YEARS = makeIntListRange(1980,2009);
+__YEARS = makeIntListRange(1970,2010);
 __MONTHS = makeIntListRange(1,12);
 __DAYS = makeIntListRange(1,31);
 
