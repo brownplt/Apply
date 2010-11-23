@@ -1,6 +1,6 @@
 serverName = 'http://apply.cs.brown.edu'
 
-resumeRoot = '/home/apply/apply/apply/'
+resumeRoot = '/home/apply/apply/apply'
 
 usedb = 'mysql' # sqlite3 also works
 dbuser = 'apply'
