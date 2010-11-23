@@ -144,3 +144,7 @@ function precision(num,decimals) {
 	}
 	return ret;
 }
+
+function errorLog(str) {
+	console.log(str);
+}
