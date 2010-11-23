@@ -21,7 +21,7 @@ function newAcctSuccess(successMsg) {
 function loader() {
   var flapjax = flapjaxInit();
   var exceptsE = captureServerExcepts(); 
-			
+
   document.startDemo = function(cb) { };
 
   var onLoadTimeE = receiver_e();
@@ -38,7 +38,6 @@ function loader() {
       else
 	window.location = 'reviewer.html';
     });
-  /**
   reqAcctE = getFilteredWSO_e(snapshot_e(
 					 merge_e(extractEvent_e('req-button',
 								'click'),
@@ -47,7 +46,6 @@ function loader() {
 					     return genRequest({url: 'UnverifiedUser/add',
 								fields:{name:name,email:email}});
 					   },$B('req-email'))));
-  */
   /**
   reqLtrsE = getFilteredWSO_e(snapshot_e(merge_e(extractEvent_e('ltr-button',
 								'click'),
@@ -59,8 +57,8 @@ function loader() {
   */
   /**
   insertDomE(reqLtrsE.transform_e(resultTrans('Your email has been sent.')),'referror');
+  */
   insertDomE(reqAcctE.transform_e(newAcctSuccess('Thank you for requesting your account! You will receive an email shortly.')),'req-2');
-  */			
   insertDomB(cookieE.filter_e(function(c) {return !c;}).constant_e(
 								   P({className:'error'},'Login failed. Please try again.')).startsWith($URL('expired')?
 																	P({className:'error'},'Your session has expired. Please login again.') : SPAN()),'logerror');
