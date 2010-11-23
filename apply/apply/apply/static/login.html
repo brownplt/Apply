@@ -26,17 +26,16 @@
     <div class="content">
 
       <div class="left-part">
-	<h2>welcome</h2>
-	<p> Welcome to Apply, a graduate admissions application
-developed in-house that the department is trying out this fall.  Its
-goal is to augment the current admissions process used by the
-department with some useful tools for reviews and communication.  The
-application is based on Resume, the faculty recruiting system built by
-Arjun Guja and Jacob Baskin.  The current maintainer is Joe Politz,
-email him at joe@cs.brown.edu with any problems, suggestions, or
-concerns.
-	</p>
-      </div>
+ 	<h2>applicants<div class="sub">request account</div></h2>
+	<p>If you already have an account, login above.  Otherwise, please enter your email address below, then click the &quot;OK&quot; button.
+	An email will be send to that address telling you how to proceed. </p>
+	<span id="req-2"></span>
+	<table class="input-table">
+		<tr><th>email</th><tr>
+		<tr><td><input type="text" id="req-email"/></td></tr>
+		<tr><td colspan=2 class="buttons"><input id="req-button" type="button" value="OK" /></td></tr>
+	</table>
+     </div>
 
 	
       <div class="right-part">
@@ -59,15 +58,6 @@ concerns.
 	    <tr><td class="buttons"><input id="reset-button" type="button" value="OK" /></td></tr>
 	  </table>
 	</div>
-	<h2>applicants<div class="sub">request account</div></h2>
-	<p>If you already have an account, login above.  Otherwise, please enter your email address below, then click the &quot;OK&quot; button.
-	An email will be send to that address telling you how to proceed. </p>
-	<span id="req-2"></span>
-	<table class="input-table">
-		<tr><th>email</th><tr>
-		<tr><td><input type="text" id="req-email"/></td></tr>
-		<tr><td colspan=2 class="buttons"><input id="req-button" type="button" value="OK" /></td></tr>
-	</table>
     </div>
     <div class="bottom">Apply is written in <a href="http://www.flapjax-lang.org">Flapjax</a>. Questions? Comments? <a href="contact.html">Contact Us.</a></div>
     <iframe style="display: none;" id="litarget" name="litarget" src="/blank.html"></iframe>
