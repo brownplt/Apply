@@ -807,6 +807,17 @@ for information on contacting the server administrator.
 		# Best data consistency checking for string dates ever
 		if((len(end_date) > 8) or (len(start_date) > 8)):
 		   raise ResumeFatalException('Invalid date!')
+
+		def gpa_check(gpa, gpa_max):
+			if(gpa == ""): raise ResumeFatalException('No GPA given')
+			if(gpa_max == ""): raise ResumeFatalException('No Max GPA Given')
+			gpa_flt = float(gpa)
+			gpa_max_flt = float(gpa_max)
+			if(gpa_flt > gpa_max): raise ResumeFatalException("GPAs don't match")
+			return [gpa_flt, gpa_max_flt]
+
+		[gpa, gpa_max] = gpa_check(gpa, gpa_max)
+
 		degree = Degree.cSelectOne(self.department,id=degree_id)
 		inst = ApplicantInstitution(applicant=self,
 					    name=name,
@@ -814,16 +825,14 @@ for information on contacting the server administrator.
 					    end_date=end_date,
 					    major=major,
 					    degree=degree,
-					    gpa=float(gpa),
-					    gpa_max=float(gpa_max),
+					    gpa=gpa,
+					    gpa_max=gpa_max,
 					    department=self.department,
 					    transcript_official=False,
 					    lastSubmitted=0,
 					    transcript_file='')
 		self.department.updateLastChange(self)
 		return toJSON(inst)
-				   
-		 
 		   
 
 	def handle_verifyStatement(self, verify, stmt_id):
