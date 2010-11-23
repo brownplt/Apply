@@ -1,6 +1,6 @@
 serverName = 'http://apply.cs.brown.edu'
 
-resumeRoot = '/home/apply/apply/resume'
+resumeRoot = '/home/apply/apply/apply/'
 
 usedb = 'mysql' # sqlite3 also works
 dbuser = 'apply'
@@ -17,7 +17,7 @@ smtpPassword='' #given a username and password, SSMTP will be used
 
 resumeLog = resumeRoot + '/logs/resume.log'
 emailLog = resumeRoot + '/logs/email.log'
-serverRoot = resumeRoot + '/resume'
+serverRoot = resumeRoot + '/apply/apply'
 uploadPath = resumeRoot + '/uploads' # recommendations, etc. go here
 tempPath = resumeRoot + '/temp' # temporary csv's go here
 
