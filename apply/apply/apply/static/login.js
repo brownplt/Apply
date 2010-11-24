@@ -8,8 +8,7 @@ function newAcctSuccess(successMsg) {
     if(v.error) {return toResultDom(v, successMsg);}
     if(v.verify) {
       verifyDom = P({className: 'feedback-success'},
-		    DIV(successMsg,
-			A({href:'newapp.html?verify=' + v.verify}, "Goto signup")));
+		    DIV(successMsg));
       return P({className: 'feedback-success'},
 	       verifyDom);
     }

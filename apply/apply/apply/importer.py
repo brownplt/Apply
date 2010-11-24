@@ -138,6 +138,8 @@ def populateFromCSV(filename):
 
         if(not isData(country)):
             country = 'Unknown'
+	if(gender == ' '):
+	    gender = 'Unknown'
         
         app = baseApplicant(department_id,first,last,eth,country,email,'',gender)
 
