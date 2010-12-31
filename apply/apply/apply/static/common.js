@@ -146,5 +146,7 @@ function precision(num,decimals) {
 }
 
 function errorLog(str) {
-	console.log(str);
+	if(window.console) {
+	  console.log(str);
+	}
 }
