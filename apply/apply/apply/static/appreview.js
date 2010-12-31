@@ -186,7 +186,7 @@ function loader() {
      fields:{cookie:authCookie}}))).startsWith(null);
 
   var unlockEdits = extractEvent_e('unlockClassificationEdits','click')
-    .collect_e(true /* initially disabled */,function(_,disabled) {
+    .collect_e(false /* initially disabled */,function(_,disabled) {
 	demoEventsE.sendEvent({ action: 'fieldsUnlocked' });
 	$('unlockClassificationEdits').src = !disabled 
 	? 'images/locked.png' : 'images/unlocked.png';
@@ -211,7 +211,7 @@ function loader() {
 						    return genRequest({url:'Applicant/'+$URL('id')+'/setAreas',fields:{cookie:authCookie,areas:careas}});
 						  }).dom;
 
-	    disableInputs(widget,true);
+	    //disableInputs(widget,true);
 
 	    unlockEdits.lift_e(function(v) { disableInputs(widget,v); });
 	    return DIV(H4('area'),widget);
@@ -222,7 +222,7 @@ function loader() {
 					  map(function(g) {return OPTION({value:g},g);},basicInfo.genders))
 	      .serverSaving(function(gen) {
 		  return genRequest({url:'Applicant/'+$URL('id')+'/setGender',fields:{cookie:authCookie,gender:gen}});}).dom;
-	    widget.disabled = true;
+	    //widget.disabled = true;
 	    unlockEdits.lift_e(function(v) { widget.disabled = v; });
 
 	    return DIV(H4('gender'),widget);
@@ -236,7 +236,7 @@ function loader() {
 		    url: 'Applicant/'+$URL('id')+'/setPosition',
 		    fields: { cookie: authCookie, id: gen } }); 
 		}).dom;
-	    widget.disabled = true;
+	    //widget.disabled = true;
           
 	    unlockEdits.lift_e(function(v) { widget.disabled = v; });  
 	    return DIV(H4('position'),widget);
@@ -251,7 +251,7 @@ function loader() {
 	    var widget = new SelectWidget(ai.ethnicity,ethopts).serverSaving(function(eth) {
 		return genRequest({url:'Applicant/'+$URL('id')+'/setEthnicity',fields:{cookie:authCookie,ethnicity:eth}});}).dom;
 
-	    widget.disabled = true;
+	    //widget.disabled = true;
 	    unlockEdits.lift_e(function(v) { widget.disabled = v; });
 	    return DIV(H4('ethnicity'),widget);
 	  }),'ethnicity','beginning');
@@ -499,7 +499,7 @@ function loader() {
 		     },applicantB,revsB)),'highlight-add');
 
       //      if(curAuth.role === 'admin') {
-
+/*
 	insertDomB(
 		   switch_b(lift_b(function(app,revs) {
 		     var hls = toObj(app.pending_highlights,function(a) {return a.highlighteeName;});
@@ -535,7 +535,7 @@ function loader() {
 	  }
 	  else return SPAN();
 	}),'pending-list');
-
+*/
 	//}
 
 
