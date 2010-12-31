@@ -91,7 +91,7 @@ def isData(val):
     return copy.strip() != ''
 
 def populateFromCSV(filename):
-    department_id=1
+    department_id=2
     
     f = open(filename,'r')
     lines = []
@@ -108,7 +108,8 @@ def populateFromCSV(filename):
         i=0
         
         if('SCM' in els[1]): # skip masters students
-            continue
+            print "Skipping master's student " + els[2]
+	    continue
 
         for el in els:
             els[i] = el.strip('"')
@@ -140,7 +141,7 @@ def populateFromCSV(filename):
             country = 'Unknown'
 	if(gender == ' '):
 	    gender = 'Unknown'
-        
+       
         app = baseApplicant(department_id,first,last,eth,country,email,'',gender)
 
 	if(isData(prev3)):
@@ -160,7 +161,7 @@ def populateFromCSV(filename):
             testScoreFromNameAndScore(app,'TOEFL',str(toefl))
 
 def updateCitizenships(filename):
-    department_id=1
+    department_id=2
     dept = resume.DepartmentInfo.selectBy(id=department_id)[0]
     
     f = open(filename,'r')
@@ -197,8 +198,8 @@ def updateCitizenships(filename):
 
 
 def transcriptFilename(applicant):
-#	return applicant.uname + '.pdf'
-	return applicant.uname.replace('_',' ') + '.pdf'
+	return applicant.uname + '.pdf'
+#	return applicant.uname.replace('_',' ') + '.pdf'
 
 def addOrSetTranscript(applicant,component_type,transcript_file):
 	transcript_type = resume.ComponentType.cSelectOne(applicant.department,
@@ -220,7 +221,7 @@ def addOrSetTranscript(applicant,component_type,transcript_file):
 	
 	commandstr = "cp " + transcript_file.name.replace(' ','\ ') + ' ' + str(config.uploadPath) + '/' + str(applicant.id) + '-' + str(transcript_type.id) + '-pdf'
 	os.system(commandstr)
-	dept = resume.DepartmentInfo.selectBy(id=1)[0]
+	dept = resume.DepartmentInfo.selectBy(id=2)[0]
 	dept.updateLastChange(applicant)
 
 def importTranscripts(root_dir):
@@ -230,8 +231,8 @@ def importFullApps(root_dir):
 	importComponents(root_dir, "Full Application")
 
 def importComponents(root_dir,component_type):
-	dept = resume.DepartmentInfo.selectBy(id=1)[0]
-	applicants = [x for x in resume.Applicant.selectBy(department=1)]
+	dept = resume.DepartmentInfo.selectBy(id=2)[0]
+	applicants = [x for x in resume.Applicant.selectBy(department=2)]
 
 	for applicant in applicants:
 		try:
@@ -240,6 +241,8 @@ def importComponents(root_dir,component_type):
 			addOrSetTranscript(applicant,component_type,transcript_file)
 		except IOError:
 			print "No file for applicant " + applicant.uname
+		except:
+			print "Error for applicant " + str(applicant.id)
 	
 	dept.updateLastChange()
 
@@ -302,8 +305,8 @@ def filename_to_ref_simple(dept, applicant, filename):
 				
 
 def importReferencesFlat(root_dir):
-	dept = resume.DepartmentInfo.selectBy(id=1)[0]
-	applicants = [x for x in resume.Applicant.selectBy(department=1)]
+	dept = resume.DepartmentInfo.selectBy(id=2)[0]
+	applicants = [x for x in resume.Applicant.selectBy(department=2)]
 
 	ref_filenames = [f for f in os.listdir(root_dir) if os.path.isfile(os.path.join(root_dir, f))]
 
@@ -318,8 +321,8 @@ def referencesFromDir(dept,applicant,path):
 		filename_to_ref_simple(dept, applicant, os.path.join(path,filename))
 
 def importReferencesByDir(root_dir):
-	dept = resume.DepartmentInfo.selectBy(id=1)[0]
-	applicants = [x for x in resume.Applicant.selectBy(department=1)]
+	dept = resume.DepartmentInfo.selectBy(id=2)[0]
+	applicants = [x for x in resume.Applicant.selectBy(department=2)]
 
 	ref_filenames = [f for f in os.listdir(root_dir) if (not os.path.isfile(os.path.join(root_dir, f)))]
 
