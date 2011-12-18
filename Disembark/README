@@ -1,0 +1,23 @@
+Disembark from Embark 2011
+
+Instructions
+------------
+
+$ mkdir data # XML files go here
+$ mkdir doc  # Submitted documents go here
+
+Edit disembark.py: add your username and password
+
+$ ./disembark.py
+
+The script does the following:
+
+   - Downloads XML
+   - Dumps the XML to client/data.js as JSON so you can look at it.
+   - Downloads PDFs referenced by the XML (including .doc and .rtf files ...)
+ 
+Edit it to tweak.
+
+If a file is already downloaded (either XML or PDF) the script will not download
+it again. So, you can incrementally tweak how the XML is processed without
+downloading over and over again.
