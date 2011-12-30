@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-username = 'FILL USERNAME'
-password = 'FILL PASSWORD'
+username = 'FILL'
+password = 'FILL'
 
 import logging
 from xml.etree import ElementTree
@@ -42,6 +42,7 @@ def mfloat(s):
 
 
 def request(url, values={}):
+  values = dict(map(lambda(k,v): (k,v.encode('utf-8')), values.iteritems()))
   args = urllib.urlencode(values)
   full_url = '%s?%s' % (url, args)
   req = urllib2.Request(full_url)
@@ -53,6 +54,12 @@ def request(url, values={}):
   logger.info('request: %s' % full_url)
   return txt
 
+def post(url, content_type, data):
+  req = urllib2.Request(url)
+  req.add_header('Content-Type', content_type)
+  response = opener.open(req, data)
+  return response.read()
+
 logged_in = False
 def embark_login():
   global logged_in
@@ -62,6 +69,7 @@ def embark_login():
             'TIMESTAMP': stamp(), 
             'USERNAME': username,
             'PASSWORD': password })
+  post(EMBARK_XHR, 'application/xml', '<?xml version="1.0" encoding="UTF-8"?><XR><MODE v="SubmitSearch"></MODE><SCRX><POI v="14"></POI></SCRX><TIMESTAMP v="%s"></TIMESTAMP></XR>' % stamp())
   logged_in = True
 
 def embark_xhr(values={}):
@@ -182,7 +190,11 @@ class Student(object):
     self.__detail_fields__ = self.__detail_xml__.findall('.//FIELD')
 
     # Calculating areas
-    areas_str = custom_find(self.__detail_xml__, 'FD_410').get('v')
+    areas_str = custom_find(self.__detail_xml__, 'FD_410')
+    if areas_str == None:
+      areas_str = ''
+    else:
+      areas_str = areas_str.get('v')
     self.areas = []
     try:
       self.areas = [ areas[int(index)] for index in areas_str.split(',') ]
@@ -218,28 +230,25 @@ class Student(object):
       'embarkId': self.embark_id,
       'firstName': anon.first_name(self.first_name),
       'lastName': anon.last_name(self.last_name),
-      'email': { 'text': anon.email(self.email), 
-                  'url': 'mailto:%s' % anon.email(self.email) },
+      'email': anon.email(self.email),
       'GPA': anon.gpa(mfloat(self.GPA)),
       'GREMath': anon.gre(mfloat(self.GRE_math)),
       'GREVerbal': anon.gre(mfloat(self.GRE_verbal)),
       'country': self.country,
       'areas': self.areas,
       'materials': [
-        { 'text': 'Prime',
-          'url': anon.cv(embark_detail_url(self.embark_id)) },
-        { 'text': 'CV', 'url': anon.cv(embark_doc_url(self.__cv_file__)) },
-        { 'text': 'Statement', 
-          'url': anon.cv(embark_doc_url(self.__personal_statement_file__)) },
+        { 'text': 'CV', 'url': anon.cv(self.cv_file) },
+        { 'text': 'Statement',
+          'url': anon.transcript(self.personal_statement_file) },
         { 'text': 'Writing Sample',
-          'url': anon.cv(embark_doc_url(self.__writing_sample_file__)) }
+          'url': anon.cv(self.writing_sample_file) }
         ] +
-        [ { 'text': 'Transcript', 'url': anon.transcript(embark_doc_url(u)) } 
-          for u in self.__transcript_files__ ],
+        [ { 'text': 'Transcript', 'url': anon.cv(u) }
+          for u in self.transcript_files ],
       'recs': [ { 'text': 'Recommendation %s' % ix,
-                  'url': anon.cv(embark_doc_url(i, r)) } 
-                for ((i, r), ix) in zip(self.__recs__,
-                                        range(1, len(self.__recs__) + 1)) 
+                  'url': anon.transcript(u) }
+                for (u,  ix) in zip(self.rec_files,
+                                        range(1, len(self.rec_files) + 1))
               ],
       'expectedRecCount': int(self.expected_rec_count),
     }
@@ -382,6 +391,7 @@ class Student(object):
     if doc_id == None:
       return None
     path = "docs/%s-%s-%s" % (self.embark_id, friendly, doc_id)
+    path = path.encode('ascii', 'ignore')
     if not os.path.exists(path):
       self.set_server_state()
       self.set_recommender_state()
@@ -395,7 +405,7 @@ class Student(object):
       handle = open(path, 'wb')
       handle.write(data)
       handle.close()
-    return path
+    return path[5:]
 
   def download_docs(self):
     self.get_recommendation_filenames()
@@ -436,14 +446,12 @@ def go():
 
 def dump_json(path):
   h = open(path, 'w')
-  h.write('"use strict";\nvar data = ');
   h.write(json.dumps(students.values(), cls=JSONEncoder))
-  h.write(';');
   h.close();
 
 if __name__ == "__main__":
   go()
-  dump_json('client/data.js')
   print "Now downloading documents ..."
   for s in students.values():
     s.download_docs()
+  dump_json('client/data.js')
