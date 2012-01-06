@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-username = 'FILL'
-password = 'FILL'
+username = 'arjun@cs.brown.edu'
+password = 'Ma49Ctq6'
 
 import logging
 from xml.etree import ElementTree
@@ -236,13 +236,12 @@ class Student(object):
       'GREVerbal': anon.gre(mfloat(self.GRE_verbal)),
       'country': self.country,
       'areas': self.areas,
-      'materials': [
-        { 'text': 'CV', 'url': anon.cv(self.cv_file) },
-        { 'text': 'Statement',
-          'url': anon.transcript(self.personal_statement_file) },
-        { 'text': 'Writing Sample',
-          'url': anon.cv(self.writing_sample_file) }
-        ] +
+      'materials': \
+        [ { 'text': 'Statement',
+            'url': anon.transcript(u) } for u in self.personal_statement_files]+
+        [ { 'text': 'Writing Sample',
+            'url': anon.cv(u) } for u in self.writing_sample_files ] +
+        [ { 'text': 'CV', 'url': anon.cv(u) } for u in self.cv_files ] +
         [ { 'text': 'Transcript', 'url': anon.cv(u) }
           for u in self.transcript_files ],
       'recs': [ { 'text': 'Recommendation %s' % ix,
@@ -363,12 +362,13 @@ class Student(object):
       return fs
 
   def get_upload_filenames(self):
-    self.__cv_file__ = self.get_fuid_files(self.__cv_fuid__)
+    self.__cv_files__ = self.get_fuid_files(self.__cv_fuid__,False)
     self.__transcript_files__ = \
-      [ self.get_fuid_files(f) for f in self.__transcript_fuids__ ]
-    self.__personal_statement_file__ = \
-      self.get_fuid_files(self.__personal_statement_fuid__)
-    self.__writing_sample_file__ = self.get_fuid_files(self.__writing_sample_fuid__)
+      sum([self.get_fuid_files(f,False) for f in self.__transcript_fuids__ ],[])
+    self.__personal_statement_files__ = \
+      self.get_fuid_files(self.__personal_statement_fuid__, False)
+    self.__writing_sample_files__ = \
+      self.get_fuid_files(self.__writing_sample_fuid__, False)
 
   def prime_doc(self, doc_id, is_rec):
     if Student.primed_docs.has_key(doc_id):
@@ -410,11 +410,12 @@ class Student(object):
   def download_docs(self):
     self.get_recommendation_filenames()
     self.get_upload_filenames()
-    self.cv_file = self.__download__('CV', self.__cv_file__)
-    self.personal_statement_file = \
-      self.__download__('Statement', self.__personal_statement_file__)
-    self.writing_sample_file =  \
-      self.__download__('Sample', self.__writing_sample_file__)
+    self.cv_files = \
+      [ self.__download__('CV', t) for t in self.__cv_files__ ]
+    self.personal_statement_files = \
+      [ self.__download__('Statement',t) for t in  self.__personal_statement_files__ ]
+    self.writing_sample_files =  \
+      [ self.__download__('Sample', t) for t in self.__writing_sample_files__ ]
     self.transcript_files = \
       [ self.__download__('Transcript-%s' % i, t)
           for i, t in zip(range(0,len(self.__transcript_files__)),
@@ -451,7 +452,7 @@ def dump_json(path):
 
 if __name__ == "__main__":
   go()
-  print "Now downloading documents ..."
+  logger.info("Now downloading documents ...")
   for s in students.values():
     s.download_docs()
   dump_json('client/data.js')
