@@ -34,7 +34,7 @@ def gpa(num):
     return num
 
 def gre(num):
-  if ANONIMIZE != None:
+  if ANONIMIZE and num != None:
     if num > 170:
       return int(random.uniform(200, 800))
     else:
