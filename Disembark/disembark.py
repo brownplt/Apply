@@ -3,6 +3,7 @@
 username = 'arjun@cs.brown.edu'
 password = 'Ma49Ctq6'
 
+import codecs # Python is TERRIBLE at Unicode
 import logging
 from xml.etree import ElementTree
 import sys
@@ -19,7 +20,7 @@ anon.ANONIMIZE = False
 
 logging.basicConfig(format='%(message)s')
 logger = logging.getLogger('disembark')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.WARNING)
 
 
 EMBARK_XHR = 'http://manage.embark.com/AjaxHandler.ashx'
@@ -288,6 +289,7 @@ class Student(object):
       handle.close()
 
     xml = ElementTree.parse(path)
+    recs_xml = xml
     ids = [ x.get('recommender_id') for x in xml.getiterator() 
                                               if x.tag == 'CD_182' ]
     fuids = [ x.get('fuid') for x in xml.getiterator()
@@ -298,6 +300,7 @@ class Student(object):
 
     ids_and_fuids = zip(ids, fuids)
     recs = []
+    found_recs = { }
     for rec_id, rec_fuid in ids_and_fuids:
       path = "data/recinfo-%s-%s.xml" % (self.embark_id, rec_id)
       if not os.path.exists(path):
@@ -315,13 +318,31 @@ class Student(object):
         handle.close()
       xml = ElementTree.parse(path)
       these_recs = [ (f.get('n'), rec_id) for f in xml.findall('.//FILE') ]
+      if len(these_recs) > 0:
+        found_recs[rec_id] = True
+      else:
+        found_recs[rec_id] = False
       logger.info('%s filenames in %s' % (len(these_recs), path))
       recs = recs + these_recs
 
     for doc_id, _ in recs:
       Student.primed_docs[doc_id] = True
+
+    rectexts = { }
+    for x in [x for x in recs_xml.getiterator() if x.tag == 'CD_182']:
+      rec_id = x.get('recommender_id')
+      if not found_recs[rec_id]:
+        name = "%s %s <%s>" % (custom_find(x, 'F_4').get('v'),
+                               custom_find(x, 'F_2').get('v'),
+                               custom_find(x, 'F_21').get('v'))
+        text = custom_find(x, 'FD_444')
+        if text != None:
+          text = text.text
+          if text != None and len(text) > 0:
+            rectexts[rec_id] = { 'id': rec_id, 'name': name, 'text': text }
     
     self.__recs__ = recs
+    self.__pasted_recs__ = rectexts
     self.expected_rec_count = len(ids_and_fuids)
       
 
@@ -395,7 +416,7 @@ class Student(object):
     if not os.path.exists(path):
       self.set_server_state()
       self.set_recommender_state()
-      logger.info('%s : downloading %s' % (self, doc_id))
+      logger.warning('%s : downloading %s to %s' % (self, doc_id, path))
       if rec_id == None:
         args = { 'DocumentFileId': doc_id, 'IsRecommendationDocument': 'false' }
       else:
@@ -423,6 +444,18 @@ class Student(object):
     self.rec_files = \
       [ self.__download__('Rec-%s-%s' % (doc_id, rec_id), doc_id, rec_id) 
           for doc_id, rec_id in self.__recs__ ]
+    for k in self.__pasted_recs__:
+      d = self.__pasted_recs__[k]
+      path = 'docs/%s-%s-pasted.txt' % (self.embark_id, d['id'])
+      if not os.path.exists(path):
+        f = codecs.open(path, 'w', encoding='utf-8')
+        f.write(d['name'])
+        f.write('\n\nPasted into textbox:\n\n')
+        f.write(d['text'])
+        f.close()
+      else:
+        print "%s exists" % path
+      self.rec_files.append(path[5:])
 
 
 def disembark(path):
